@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNA Drop-In Schedule — Live Data Test</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="calendar-app">
+
+    <!-- Header band -->
+    <header class="cal-header">
+      <h1 class="cal-title">
+        Drop In Schedule
+        <span class="cal-title-sep">|</span>
+        <span id="date-range">—</span>
+      </h1>
+      <div class="view-toggle" role="tablist" aria-label="View mode">
+        <button type="button" class="view-toggle-btn" data-view="grid" aria-pressed="true">Grid view</button>
+        <button type="button" class="view-toggle-btn" data-view="list" aria-pressed="false">List view</button>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <button type="button" id="mobile-filters-toggle" class="mobile-filters-toggle" aria-expanded="false" aria-controls="filters">
+      <span>Filters</span>
+      <span class="mobile-filters-chevron" aria-hidden="true">&#9662;</span>
+    </button>
+
+    <div id="filters" class="filters">
+      <label class="filter">
+        <span class="filter-label">Program Type</span>
+        <select id="filter-program-type">
+          <option value="">All Drop-Ins</option>
+          <option value="Sport Drop-In">Sport Drop-In</option>
+          <option value="Social Program Drop-In">Social Program Drop-In</option>
+          <option value="Registered Sports">Registered Sports</option>
+          <option value="Programs with Drop-In Options">Programs with Drop-In Options</option>
+          <option value="Family Sports Drop In">Family Sports Drop In</option>
+        </select>
+      </label>
+
+      <label class="filter">
+        <span class="filter-label">Age Category</span>
+        <select id="filter-age-category">
+          <option value="">All Categories</option>
+          <option value="Early Years">Early Years</option>
+          <option value="Children">Children</option>
+          <option value="Youth">Youth</option>
+          <option value="Adults">Adults</option>
+          <option value="Older Adults">Older Adults</option>
+          <option value="Everyone (all-ages)">Everyone (all-ages)</option>
+        </select>
+      </label>
+
+      <label class="filter">
+        <span class="filter-label">Availability</span>
+        <select id="filter-availability">
+          <option value="">All Availability</option>
+          <option value="available">Still Available</option>
+        </select>
+      </label>
+
+      <label class="filter">
+        <span class="filter-label">Location</span>
+        <select id="filter-location">
+          <option value="">All Locations</option>
+          <!-- Locations populated dynamically by calendar.js -->
+        </select>
+      </label>
+    </div>
+
+    <!-- Week navigation -->
+    <nav class="week-nav" aria-label="Week navigation">
+      <button type="button" id="prev-week" class="nav-btn nav-btn-prev">
+        <span class="nav-btn-icon" aria-hidden="true">&#8249;</span>
+        <span class="nav-btn-label">Previous Week</span>
+      </button>
+      <button type="button" id="today-btn" class="nav-btn nav-btn-today">Today</button>
+      <button type="button" id="next-week" class="nav-btn nav-btn-next">
+        <span class="nav-btn-label">Next Week</span>
+        <span class="nav-btn-icon" aria-hidden="true">&#8250;</span>
+      </button>
+    </nav>
+
+    <!-- Mobile day-tab strip -->
+    <div id="mobile-day-tabs" class="mobile-day-tabs" role="tablist" aria-label="Day selector">
+    </div>
+
+    <!-- Calendar grid -->
+    <main id="calendar-grid" class="calendar-grid" aria-live="polite">
+    </main>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state" hidden>
+      <p>No programs match your filters.</p>
+    </div>
+
+    <!-- Mobile bottom-sheet -->
+    <div id="mobile-sheet" class="mobile-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="mobile-sheet-title">
+      <div class="mobile-sheet-backdrop" data-close-sheet></div>
+      <div class="mobile-sheet-panel">
+        <button type="button" class="mobile-sheet-close" data-close-sheet aria-label="Close">&times;</button>
+        <div id="mobile-sheet-content"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--
+    Simulated PerfectMind data in the format WordPress/PHP would output.
+    In production, WordPress replaces this block with:
+      <script>window.UNA_LIVE_DATA = <?php echo json_encode($perfectmind_events); ?>;</script>
+  -->
+  <script>
+  window.UNA_LIVE_DATA = [
+    {
+      "Subject": "Core Pilates | Beginner-Intermediate",
+      "CourseID": "14233",
+      "ExactTime": "2026-04-13 09:25AM",
+      "EndTime": "10:25AM",
+      "Description": "In this dynamic class, traditional mat Pilates is blended with modern fitness techniques.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "Abby (Yang) Zhang",
+      "Capacity": "20",
+      "Remaining": "14",
+      "ID": "a3bd9a36-8298-40db-9e17-6372228cece8",
+      "CalendarName": "Physical Activity",
+      "MinimumAge": 19,
+      "MaximumAge": null,
+      "CalendarCategory": "Adults",
+      "SportDropIn": false,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": true,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Parent & Tot: Gym Drop-In",
+      "CourseID": "14356",
+      "ExactTime": "2026-04-13 09:30AM",
+      "EndTime": "11:00AM",
+      "Description": "A fun, supervised play session for parents and young children.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "100",
+      "Remaining": "92",
+      "ID": "b4ce0a47-9389-41eb-a028-7483339bf509",
+      "CalendarName": "Family Programs",
+      "MinimumAge": 0,
+      "MaximumAge": 5,
+      "CalendarCategory": "Early Years",
+      "SportDropIn": false,
+      "FamilySportsDropIn": true,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Drop-In Badminton",
+      "CourseID": "14623",
+      "ExactTime": "2026-04-14 11:30AM",
+      "EndTime": "1:00PM",
+      "Description": "Casual badminton drop-in. All skill levels welcome.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "18",
+      "Remaining": "0",
+      "ID": "c5df1b58-a49a-52fc-b139-8594449cf610",
+      "CalendarName": "Sports",
+      "MinimumAge": 19,
+      "MaximumAge": null,
+      "CalendarCategory": "Adults",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Zumba",
+      "CourseID": "14254",
+      "ExactTime": "2026-04-13 06:35PM",
+      "EndTime": "7:35PM",
+      "Description": "High-energy dance fitness class.",
+      "LocationName": "Old Barn Community Centre",
+      "InstructorName": "Maria Santos",
+      "Capacity": "20",
+      "Remaining": "7",
+      "ID": "d6e02c69-b5ab-63gd-c24a-9605550dg721",
+      "CalendarName": "Physical Activity",
+      "MinimumAge": 19,
+      "MaximumAge": null,
+      "CalendarCategory": "Adults",
+      "SportDropIn": false,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": true,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Coffee & Conversation",
+      "CourseID": "15201",
+      "ExactTime": "2026-04-13 10:00AM",
+      "EndTime": "11:30AM",
+      "Description": "Weekly social gathering for older adults.",
+      "LocationName": "Old Barn Community Centre",
+      "InstructorName": "",
+      "Capacity": "30",
+      "Remaining": "15",
+      "ID": "e7f13d7a-c6bc-74he-d35b-a716661eh832",
+      "CalendarName": "Social Programs",
+      "MinimumAge": 55,
+      "MaximumAge": null,
+      "CalendarCategory": "Older Adults",
+      "SportDropIn": false,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": true
+    },
+    {
+      "Subject": "Open Gym | Youth",
+      "CourseID": "14801",
+      "ExactTime": "2026-04-15 05:45PM",
+      "EndTime": "7:15PM",
+      "Description": "Open gym time for youth ages 13-18.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "25",
+      "Remaining": "8",
+      "ID": "f8g24e8b-d7cd-85if-e46c-b827772fi943",
+      "CalendarName": "Sports",
+      "MinimumAge": 13,
+      "MaximumAge": 18,
+      "CalendarCategory": "Youth",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Drop-In Volleyball",
+      "CourseID": "14671",
+      "ExactTime": "2026-04-15 07:45PM",
+      "EndTime": "9:15PM",
+      "Description": "Recreational volleyball for adults.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "24",
+      "Remaining": "0",
+      "ID": "g9h35f9c-e8de-96jg-f57d-c938883gj054",
+      "CalendarName": "Sports",
+      "MinimumAge": 19,
+      "MaximumAge": null,
+      "CalendarCategory": "Adults",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Drop-In Pickleball",
+      "CourseID": "14993",
+      "ExactTime": "2026-04-16 02:00PM",
+      "EndTime": "3:30PM",
+      "Description": "Casual pickleball for adults.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "24",
+      "Remaining": "18",
+      "ID": "h0i46g0d-f9ef-07kh-g68e-d049994hk165",
+      "CalendarName": "Sports",
+      "MinimumAge": 18,
+      "MaximumAge": null,
+      "CalendarCategory": "Adults",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Toddler Gym Time",
+      "CourseID": "15410",
+      "ExactTime": "2026-04-17 09:30AM",
+      "EndTime": "10:30AM",
+      "Description": "Active play session for toddlers and caregivers.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "Kim Lee",
+      "Capacity": "15",
+      "Remaining": "5",
+      "ID": "i1j57h1e-g0fg-18li-h79f-e150005il276",
+      "CalendarName": "Early Years",
+      "MinimumAge": 0,
+      "MaximumAge": 4,
+      "CalendarCategory": "Early Years",
+      "SportDropIn": false,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": true,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Kids Art Club",
+      "CourseID": "15420",
+      "ExactTime": "2026-04-17 03:30PM",
+      "EndTime": "4:30PM",
+      "Description": "Creative art activities for children.",
+      "LocationName": "Old Barn Community Centre",
+      "InstructorName": "Sarah Chen",
+      "Capacity": "12",
+      "Remaining": "3",
+      "ID": "j2k68i2f-h1gh-29mj-i80g-f261116jm387",
+      "CalendarName": "Arts",
+      "MinimumAge": 5,
+      "MaximumAge": 12,
+      "CalendarCategory": "Children",
+      "SportDropIn": false,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": true,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Family Open Gym",
+      "CourseID": "15310",
+      "ExactTime": "2026-04-18 10:00AM",
+      "EndTime": "12:00PM",
+      "Description": "Open gym for the whole family.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "50",
+      "Remaining": "22",
+      "ID": "k3l79j3g-i2hi-30nk-j91h-g372227kn498",
+      "CalendarName": "Family Programs",
+      "MinimumAge": null,
+      "MaximumAge": null,
+      "CalendarCategory": "Everyone (all-ages)",
+      "SportDropIn": false,
+      "FamilySportsDropIn": true,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Youth Volleyball Drop-In",
+      "CourseID": "15012",
+      "ExactTime": "2026-04-18 04:00PM",
+      "EndTime": "5:30PM",
+      "Description": "Volleyball drop-in for teens.",
+      "LocationName": "Wesbrook Community Centre",
+      "InstructorName": "",
+      "Capacity": "20",
+      "Remaining": "6",
+      "ID": "l4m80k4h-j3ij-41ol-k02i-h483338lo509",
+      "CalendarName": "Sports",
+      "MinimumAge": 13,
+      "MaximumAge": 18,
+      "CalendarCategory": "Youth",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    },
+    {
+      "Subject": "Drop-In Badminton",
+      "CourseID": "15102",
+      "ExactTime": "2026-04-12 07:30PM",
+      "EndTime": "8:30PM",
+      "Description": "Casual badminton for youth.",
+      "LocationName": "Old Barn Community Centre",
+      "InstructorName": "",
+      "Capacity": "18",
+      "Remaining": "12",
+      "ID": "m5n91l5i-k4jk-52pm-l13j-i594449mp610",
+      "CalendarName": "Sports",
+      "MinimumAge": 13,
+      "MaximumAge": 18,
+      "CalendarCategory": "Youth",
+      "SportDropIn": true,
+      "FamilySportsDropIn": false,
+      "RegisteredSports": false,
+      "ProgramswithDropInOptions": false,
+      "SocialProgramDropIn": false
+    }
+  ];
+  </script>
+
+  <script src="perfectmind-adapter.js"></script>
+  <script src="calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+/* ============================================
+   UNA Drop-In Calendar — Styles
+   Brand: UNA official palette + Proxima Nova
+   ============================================ */
+
+:root {
+  /* UNA Greens */
+  --una-green:         #3B7267;
+  --una-green-lighter: #4D9AC9;
+  --una-green-darker:  #015990;
+
+  /* Bright Green Accent */
+  --bright-green:         #44BC9B;
+  --bright-green-lighter: #56DEB9;
+  --bright-green-darker:  #41A288;
+
+  /* Bright Yellow Accent */
+  --bright-yellow:         #E9E980;
+  --bright-yellow-lighter: #F7F7CC;
+  --bright-yellow-darker:  #E2E23B;
+
+  /* Neutrals */
+  --beige:    #F5F3EC;
+  --white:    #FFFFFF;
+  --charcoal: #1A1A1A;
+  --text:     #414042;
+
+  /* Greys */
+  --grey-50:  #F2F2F2;
+  --grey-100: #E8E8E8;
+  --grey-200: #D9D9D9;
+
+  /* Layout tokens */
+  --hour-height-desktop: 64px;
+  --hour-height-mobile:  72px;
+  --time-col-desktop:    80px;
+  --time-col-tablet:     60px;
+  --header-row-height:   56px;
+  --radius:              4px;
+  --radius-lg:           8px;
+  --shadow:              0 2px 8px rgba(26, 26, 26, 0.08);
+  --shadow-lg:           0 8px 24px rgba(26, 26, 26, 0.18);
+}
+
+/* ============ Reset / base ============ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+  color: var(--text);
+  font-family: "proxima-nova", "Proxima Nova", -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+select {
+  font: inherit;
+  color: var(--text);
+}
+
+/* ============ App container ============ */
+
+.calendar-app {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* ============ Header band ============ */
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--una-green);
+  color: var(--white);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.cal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.cal-title-sep {
+  margin: 0 8px;
+  opacity: 0.6;
+  font-weight: 300;
+}
+
+#date-range {
+  font-weight: 400;
+}
+
+/* View toggle (Grid / List) */
+.view-toggle {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.view-toggle-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  border-radius: 999px;
+  min-height: 36px;
+  transition: background 0.15s ease;
+}
+
+.view-toggle-btn[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--una-green);
+}
+
+.view-toggle-btn:not([aria-pressed="true"]):hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============ Filters ============ */
+
+.mobile-filters-toggle {
+  display: none;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--grey-50);
+  border-bottom: 1px solid var(--grey-100);
+}
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 180px;
+  min-width: 180px;
+}
+
+.filter-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--una-green);
+}
+
+.filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--white)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%233B7267' d='M6 8L0 0h12z'/></svg>")
+    no-repeat right 14px center;
+  border: 1px solid var(--grey-200);
+  border-radius: var(--radius);
+  padding: 10px 36px 10px 12px;
+  font-size: 14px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.filter select:hover { border-color: var(--una-green); }
+.filter select:focus {
+  outline: none;
+  border-color: var(--una-green);
+  box-shadow: 0 0 0 3px rgba(59, 114, 103, 0.15);
+}
+
+/* ============ Week navigation ============ */
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-100);
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  min-height: 44px;
+  border: 1px solid var(--una-green);
+  border-radius: var(--radius);
+  color: var(--una-green);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-btn:hover {
+  background: var(--una-green);
+  color: var(--white);
+}
+
+.nav-btn-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.nav-btn-today {
+  background: var(--una-green);
+  color: var(--white);
+}
+
+.nav-btn-today:hover {
+  background: var(--una-green-darker);
+}
+
+/* ============ Mobile day tabs ============ */
+
+.mobile-day-tabs {
+  display: none;
+}
+
+/* ============ Calendar grid (DESKTOP) ============ */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: var(--time-col-desktop) repeat(7, 1fr);
+  background: var(--white);
+  border: 1px solid var(--grey-100);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: hidden;
+}
+
+/* --- Header row --- */
+.grid-corner {
+  background: var(--una-green);
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.day-header {
+  background: var(--una-green);
+  color: var(--white);
+  padding: 14px 8px;
+  text-align: center;
+  font-weight: 600;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  min-height: var(--header-row-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.day-header:last-child { border-right: none; }
+
+.day-header.is-today {
+  background: var(--una-green-darker);
+}
+
+.day-header-long,
+.day-header-short {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.day-header-short { display: none; }
+
+/* --- Time axis --- */
+.time-axis {
+  position: relative;
+  background: var(--grey-50);
+  border-right: 1px solid var(--grey-100);
+}
+
+.time-tick {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 4px 8px 0 0;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--una-green);
+  border-top: 1px solid var(--grey-100);
+}
+
+.time-tick:first-child { border-top: none; }
+
+/* --- Day columns --- */
+.day-column {
+  position: relative;
+  border-right: 1px solid var(--grey-100);
+  background:
+    linear-gradient(to bottom, transparent calc(var(--hour-height-desktop) - 1px), var(--grey-50) calc(var(--hour-height-desktop) - 1px), var(--grey-50) var(--hour-height-desktop), transparent var(--hour-height-desktop));
+  background-size: 100% var(--hour-height-desktop);
+}
+
+.day-column:last-child { border-right: none; }
+
+.day-column.is-today {
+  background-color: rgba(247, 247, 204, 0.35);
+  background-blend-mode: multiply;
+}
+
+/* --- Event cards --- */
+.event-card {
+  position: absolute;
+  background: var(--bright-yellow-lighter);
+  border-left: 3px solid var(--una-green);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.06);
+}
+
+.event-card:hover {
+  z-index: 5;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.event-card.is-past {
+  opacity: 0.5;
+  filter: grayscale(0.2);
+}
+
+/* Program-type color variants */
+.event-card.type-sport-drop-in {
+  background: var(--bright-yellow-lighter);
+  border-left-color: var(--una-green);
+}
+.event-card.type-social-program-drop-in {
+  background: rgba(86, 222, 185, 0.30);
+  border-left-color: var(--bright-green-darker);
+}
+.event-card.type-registered-sports {
+  background: var(--beige);
+  border-left-color: var(--una-green-darker);
+}
+.event-card.type-programs-with-drop-in-options {
+  background: var(--white);
+  border: 1px solid var(--una-green);
+  border-left: 3px solid var(--una-green);
+}
+.event-card.type-family-sports-drop-in {
+  background: rgba(233, 233, 128, 0.4);
+  border-left-color: var(--una-green);
+}
+
+.event-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--una-green);
+  line-height: 1.25;
+  margin-bottom: 2px;
+  word-break: break-word;
+}
+
+.event-age {
+  display: block;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.event-time {
+  display: block;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+/* "+N more" overflow badge */
+.event-card.is-overflow {
+  background: var(--una-green);
+  color: var(--white);
+  border-left-color: var(--una-green-darker);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-card.is-overflow .event-name {
+  color: var(--white);
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ============ Tooltip (desktop) ============ */
+
+.tooltip {
+  position: absolute;
+  z-index: 100;
+  background: var(--white);
+  border: 1px solid var(--grey-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 14px 16px;
+  min-width: 220px;
+  max-width: 280px;
+  font-size: 13px;
+  color: var(--text);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltip-row {
+  display: block;
+  text-align: center;
+  padding: 3px 0;
+}
+
+.tooltip-row.is-past-label {
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 11px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--grey-100);
+  margin-bottom: 6px;
+}
+
+.tooltip-row.is-name {
+  font-weight: 700;
+  color: var(--una-green);
+  font-size: 15px;
+}
+
+.tooltip-row.is-spots {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--grey-100);
+  font-weight: 600;
+  color: var(--bright-green-darker);
+}
+
+.tooltip-row.is-full {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--grey-100);
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* ============ List view ============ */
+
+.calendar-grid.is-list-view {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-grid.is-list-view .time-axis,
+.calendar-grid.is-list-view .grid-corner {
+  display: none;
+}
+
+.calendar-grid.is-list-view .day-column {
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  min-height: 200px;
+}
+
+.calendar-grid.is-list-view .event-card {
+  position: static;
+  width: auto !important;
+  left: auto !important;
+  height: auto !important;
+  top: auto !important;
+}
+
+/* ============ Empty state ============ */
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  background: var(--bright-yellow-lighter);
+  color: var(--una-green);
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid var(--grey-100);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* ============ Mobile bottom sheet ============ */
+
+.mobile-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.mobile-sheet[hidden] { display: none; }
+
+.mobile-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.5);
+  animation: fade-in 0.18s ease;
+}
+
+.mobile-sheet-panel {
+  position: relative;
+  width: 100%;
+  background: var(--white);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 24px 20px 32px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slide-up 0.22s ease;
+}
+
+.mobile-sheet-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text);
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* ============ TABLET (768–1023px) ============ */
+
+@media (max-width: 1023px) {
+  .calendar-app { padding: 16px 12px 32px; }
+
+  .calendar-grid {
+    grid-template-columns: var(--time-col-tablet) repeat(7, 1fr);
+  }
+
+  .day-header { padding: 10px 4px; }
+  .day-header-long { display: none; }
+  .day-header-short { display: inline; font-size: 12px; }
+
+  .event-card { padding: 4px 6px; }
+  .event-name { font-size: 12px; }
+  .event-age { display: none; } /* hide age on tablet to save space; tap reveals */
+  .event-time { font-size: 10px; }
+
+  .filters { flex-wrap: wrap; }
+  .filter { flex: 1 1 calc(50% - 6px); }
+
+  .nav-btn { padding: 10px 14px; font-size: 13px; }
+}
+
+/* ============ MOBILE (<768px) ============ */
+
+@media (max-width: 767px) {
+  .calendar-app { padding: 12px 0 24px; }
+
+  .cal-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 0;
+  }
+
+  .cal-title { font-size: 17px; }
+  .cal-title-sep { display: none; }
+  #date-range {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    opacity: 0.85;
+  }
+
+  .view-toggle { width: 100%; justify-content: stretch; }
+  .view-toggle-btn { flex: 1; }
+
+  /* Collapsible filters */
+  .mobile-filters-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--grey-50);
+    border-bottom: 1px solid var(--grey-100);
+    font-weight: 600;
+    color: var(--una-green);
+    min-height: 48px;
+  }
+
+  .mobile-filters-chevron {
+    transition: transform 0.18s ease;
+  }
+
+  .mobile-filters-toggle[aria-expanded="true"] .mobile-filters-chevron {
+    transform: rotate(180deg);
+  }
+
+  .filters {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .filters.is-open { display: flex; }
+  .filter { min-width: 0; flex: 1 1 auto; width: 100%; }
+
+  /* Week nav: icon-only arrows */
+  .week-nav { padding: 12px 16px; }
+  .nav-btn-prev .nav-btn-label,
+  .nav-btn-next .nav-btn-label { display: none; }
+  .nav-btn-prev, .nav-btn-next {
+    padding: 10px 14px;
+    min-width: 48px;
+    justify-content: center;
+  }
+  .nav-btn-icon { font-size: 22px; }
+
+  /* Mobile day tabs */
+  .mobile-day-tabs {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 12px 16px;
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-100);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .day-tab {
+    padding: 8px 4px;
+    min-height: 56px;
+    border-radius: var(--radius);
+    background: var(--grey-50);
+    color: var(--una-green);
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 1px solid transparent;
+  }
+
+  .day-tab-name { font-size: 11px; letter-spacing: 0.4px; }
+  .day-tab-date { font-size: 14px; font-weight: 700; }
+
+  .day-tab.is-active {
+    background: var(--una-green);
+    color: var(--white);
+  }
+
+  .day-tab.is-today:not(.is-active) {
+    border-color: var(--una-green);
+  }
+
+  /* Calendar grid: only one day visible */
+  .calendar-grid {
+    grid-template-columns: var(--time-col-tablet) 1fr;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .day-header { display: none; }
+  .grid-corner { display: none; }
+
+  .day-column { display: none; }
+  .day-column.is-mobile-active { display: block; }
+
+  .event-card { padding: 8px 10px; min-height: 56px; }
+  .event-name { font-size: 14px; }
+  .event-age { display: block; font-size: 12px; }
+  .event-time { font-size: 12px; }
+
+  /* Hide hover tooltip on mobile (use bottom sheet instead) */
+  .tooltip { display: none !important; }
+
+  /* List view on mobile = single-day stacked */
+  .calendar-grid.is-list-view {
+    grid-template-columns: 1fr;
+    padding: 12px 16px;
+  }
+  .calendar-grid.is-list-view .day-column {
+    padding: 0;
+    background: transparent;
+  }
+}
