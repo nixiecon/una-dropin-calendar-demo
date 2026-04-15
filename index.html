@@ -45,21 +45,21 @@
              data-options='["Early Years","Children","Youth","Adults","Older Adults","Everyone (all-ages)"]'></div>
       </div>
 
-      <div class="filter">
+      <label class="filter">
         <span class="filter-label">Availability</span>
-        <div class="multi-select" id="filter-availability"
-             data-filter-key="availability"
-             data-placeholder="All Availability"
-             data-options='[{"value":"available","label":"Still Available"}]'></div>
-      </div>
+        <select id="filter-availability">
+          <option value="">All Availability</option>
+          <option value="available">Still Available</option>
+        </select>
+      </label>
 
-      <div class="filter">
+      <label class="filter">
         <span class="filter-label">Location</span>
-        <div class="multi-select" id="filter-location"
-             data-filter-key="location"
-             data-placeholder="All Locations"
-             data-options='[]'></div>
-      </div>
+        <select id="filter-location">
+          <option value="">All Locations</option>
+          <!-- Locations populated dynamically by calendar.js -->
+        </select>
+      </label>
     </div>
 
     <!-- Week navigation -->

@@ -102,8 +102,12 @@
   function populateLocationFilter() {
     const programs = getPrograms();
     const locations = Array.from(new Set(programs.map(p => p.location))).sort();
-    // Inject into the data-options attribute for the multi-select init pass
-    els.filterLocation.setAttribute('data-options', JSON.stringify(locations));
+    locations.forEach(loc => {
+      const opt = document.createElement('option');
+      opt.value = loc;
+      opt.textContent = loc;
+      els.filterLocation.appendChild(opt);
+    });
   }
 
   // ============ Multi-select controller ============
@@ -725,7 +729,17 @@
   // ============ Event handlers ============
 
   function attachEventHandlers() {
-    // Filter multi-selects wire up their own handlers in initMultiSelects().
+    // Program Type + Age Category multi-selects wire up their own handlers
+    // in initMultiSelects(). Availability + Location stay as native
+    // single-select dropdowns because they only have 1-2 options.
+    els.filterAvailability.addEventListener('change', e => {
+      state.filters.availability = e.target.value ? [e.target.value] : [];
+      render();
+    });
+    els.filterLocation.addEventListener('change', e => {
+      state.filters.location = e.target.value ? [e.target.value] : [];
+      render();
+    });
 
     // Week navigation
     els.prevWeek.addEventListener('click', () => {

@@ -237,6 +237,8 @@ select {
   text-align: center;
 }
 
+.multi-select-count[hidden] { display: none; }
+
 .multi-select-chevron {
   margin-left: 8px;
   color: var(--una-green);
