@@ -30,6 +30,7 @@
     filterAgeCategory: document.getElementById('filter-age-category'),
     filterAvailability: document.getElementById('filter-availability'),
     filterLocation: document.getElementById('filter-location'),
+    allMultiSelects: document.querySelectorAll('.multi-select'),
     mobileFiltersToggle: document.getElementById('mobile-filters-toggle'),
     filtersPanel: document.getElementById('filters'),
     prevWeek: document.getElementById('prev-week'),
@@ -59,6 +60,7 @@
   function init() {
     loadPrefs();
     populateLocationFilter();
+    initMultiSelects();
     attachEventHandlers();
     render();
   }
@@ -100,11 +102,144 @@
   function populateLocationFilter() {
     const programs = getPrograms();
     const locations = Array.from(new Set(programs.map(p => p.location))).sort();
-    locations.forEach(loc => {
-      const opt = document.createElement('option');
-      opt.value = loc;
-      opt.textContent = loc;
-      els.filterLocation.appendChild(opt);
+    // Inject into the data-options attribute for the multi-select init pass
+    els.filterLocation.setAttribute('data-options', JSON.stringify(locations));
+  }
+
+  // ============ Multi-select controller ============
+
+  function initMultiSelects() {
+    els.allMultiSelects.forEach(root => {
+      const filterKey = root.getAttribute('data-filter-key');
+      const placeholder = root.getAttribute('data-placeholder') || 'All';
+      let rawOptions;
+      try {
+        rawOptions = JSON.parse(root.getAttribute('data-options') || '[]');
+      } catch (e) {
+        rawOptions = [];
+      }
+      // Normalize: allow both ["Value"] and [{value, label}]
+      const options = rawOptions.map(o =>
+        typeof o === 'string' ? { value: o, label: o } : o
+      );
+
+      // Toggle button
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'multi-select-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML =
+        `<span class="multi-select-label">${escapeHtml(placeholder)}</span>` +
+        `<span class="multi-select-count" hidden>0</span>` +
+        `<span class="multi-select-chevron" aria-hidden="true">▾</span>`;
+      root.appendChild(toggle);
+
+      // Panel
+      const panel = document.createElement('div');
+      panel.className = 'multi-select-panel';
+      panel.hidden = true;
+
+      options.forEach(opt => {
+        const label = document.createElement('label');
+        label.className = 'multi-select-option';
+        label.innerHTML =
+          `<input type="checkbox" value="${escapeHtml(opt.value)}">` +
+          `<span>${escapeHtml(opt.label)}</span>`;
+        panel.appendChild(label);
+      });
+
+      const clearBtn = document.createElement('button');
+      clearBtn.type = 'button';
+      clearBtn.className = 'multi-select-clear';
+      clearBtn.textContent = 'Clear all';
+      clearBtn.hidden = true;
+      panel.appendChild(clearBtn);
+
+      root.appendChild(panel);
+
+      // Helpers bound to this instance
+      const labelEl = toggle.querySelector('.multi-select-label');
+      const countEl = toggle.querySelector('.multi-select-count');
+
+      function updateUI() {
+        const selected = state.filters[filterKey] || [];
+        if (selected.length === 0) {
+          labelEl.textContent = placeholder;
+          countEl.hidden = true;
+          clearBtn.hidden = true;
+        } else if (selected.length === 1) {
+          const match = options.find(o => o.value === selected[0]);
+          labelEl.textContent = match ? match.label : selected[0];
+          countEl.hidden = true;
+          clearBtn.hidden = false;
+        } else {
+          labelEl.textContent = placeholder;
+          countEl.hidden = false;
+          countEl.textContent = String(selected.length);
+          clearBtn.hidden = false;
+        }
+      }
+
+      function close() {
+        panel.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function open() {
+        // Close all other panels first
+        document.querySelectorAll('.multi-select-panel').forEach(p => {
+          if (p !== panel) {
+            p.hidden = true;
+            const t = p.parentElement && p.parentElement.querySelector('.multi-select-toggle');
+            if (t) t.setAttribute('aria-expanded', 'false');
+          }
+        });
+        panel.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (panel.hidden) open(); else close();
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      panel.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const current = state.filters[filterKey] || [];
+          if (cb.checked) {
+            if (!current.includes(cb.value)) current.push(cb.value);
+          } else {
+            const idx = current.indexOf(cb.value);
+            if (idx > -1) current.splice(idx, 1);
+          }
+          state.filters[filterKey] = current;
+          updateUI();
+          render();
+        });
+      });
+
+      clearBtn.addEventListener('click', () => {
+        state.filters[filterKey] = [];
+        panel.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        updateUI();
+        render();
+      });
+
+      // Expose for external state sync if needed
+      root._multiSelect = { updateUI, close, open };
+    });
+
+    // Global click → close any open panels
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.multi-select-panel').forEach(p => {
+        if (!p.hidden) {
+          p.hidden = true;
+          const t = p.parentElement && p.parentElement.querySelector('.multi-select-toggle');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        }
+      });
     });
   }
 
@@ -387,8 +522,8 @@
 
     const card = document.createElement('div');
     card.className = 'event-card';
-    card.classList.add('type-' + slugify(ev.programType));
     if (ev._isPast) card.classList.add('is-past');
+    if (ev.spotsLeft === 0) card.classList.add('is-full');
 
     card.style.top = top + 'px';
     card.style.height = height + 'px';
@@ -436,8 +571,8 @@
         dayEvents.forEach(ev => {
           const card = document.createElement('div');
           card.className = 'event-card';
-          card.classList.add('type-' + slugify(ev.programType));
           if (ev._isPast) card.classList.add('is-past');
+          if (ev.spotsLeft === 0) card.classList.add('is-full');
           card.innerHTML =
             `<span class="event-name">${escapeHtml(ev.name)}</span>` +
             `<span class="event-age">${escapeHtml(ev.ageRange)}</span>` +
@@ -590,23 +725,7 @@
   // ============ Event handlers ============
 
   function attachEventHandlers() {
-    // Filter dropdowns
-    els.filterProgramType.addEventListener('change', e => {
-      state.filters.programType = e.target.value ? [e.target.value] : [];
-      render();
-    });
-    els.filterAgeCategory.addEventListener('change', e => {
-      state.filters.ageCategory = e.target.value ? [e.target.value] : [];
-      render();
-    });
-    els.filterAvailability.addEventListener('change', e => {
-      state.filters.availability = e.target.value ? [e.target.value] : [];
-      render();
-    });
-    els.filterLocation.addEventListener('change', e => {
-      state.filters.location = e.target.value ? [e.target.value] : [];
-      render();
-    });
+    // Filter multi-selects wire up their own handlers in initMultiSelects().
 
     // Week navigation
     els.prevWeek.addEventListener('click', () => {

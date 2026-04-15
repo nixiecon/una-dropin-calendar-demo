@@ -29,46 +29,37 @@
     </button>
 
     <div id="filters" class="filters">
-      <label class="filter">
+      <div class="filter">
         <span class="filter-label">Program Type</span>
-        <select id="filter-program-type">
-          <option value="">All Drop-Ins</option>
-          <option value="Sport Drop-In">Sport Drop-In</option>
-          <option value="Social Program Drop-In">Social Program Drop-In</option>
-          <option value="Registered Sports">Registered Sports</option>
-          <option value="Programs with Drop-In Options">Programs with Drop-In Options</option>
-          <option value="Family Sports Drop In">Family Sports Drop In</option>
-        </select>
-      </label>
+        <div class="multi-select" id="filter-program-type"
+             data-filter-key="programType"
+             data-placeholder="All Drop-Ins"
+             data-options='["Sport Drop-In","Social Program Drop-In","Registered Sports","Programs with Drop-In Options","Family Sports Drop In"]'></div>
+      </div>
 
-      <label class="filter">
+      <div class="filter">
         <span class="filter-label">Age Category</span>
-        <select id="filter-age-category">
-          <option value="">All Categories</option>
-          <option value="Early Years">Early Years</option>
-          <option value="Children">Children</option>
-          <option value="Youth">Youth</option>
-          <option value="Adults">Adults</option>
-          <option value="Older Adults">Older Adults</option>
-          <option value="Everyone (all-ages)">Everyone (all-ages)</option>
-        </select>
-      </label>
+        <div class="multi-select" id="filter-age-category"
+             data-filter-key="ageCategory"
+             data-placeholder="All Categories"
+             data-options='["Early Years","Children","Youth","Adults","Older Adults","Everyone (all-ages)"]'></div>
+      </div>
 
-      <label class="filter">
+      <div class="filter">
         <span class="filter-label">Availability</span>
-        <select id="filter-availability">
-          <option value="">All Availability</option>
-          <option value="available">Still Available</option>
-        </select>
-      </label>
+        <div class="multi-select" id="filter-availability"
+             data-filter-key="availability"
+             data-placeholder="All Availability"
+             data-options='[{"value":"available","label":"Still Available"}]'></div>
+      </div>
 
-      <label class="filter">
+      <div class="filter">
         <span class="filter-label">Location</span>
-        <select id="filter-location">
-          <option value="">All Locations</option>
-          <!-- Locations populated dynamically by calendar.js -->
-        </select>
-      </label>
+        <div class="multi-select" id="filter-location"
+             data-filter-key="location"
+             data-placeholder="All Locations"
+             data-options='[]'></div>
+      </div>
     </div>
 
     <!-- Week navigation -->

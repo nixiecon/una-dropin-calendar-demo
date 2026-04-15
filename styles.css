@@ -189,6 +189,122 @@ select {
   box-shadow: 0 0 0 3px rgba(59, 114, 103, 0.15);
 }
 
+/* ============ Multi-select dropdown ============ */
+
+.multi-select {
+  position: relative;
+}
+
+.multi-select-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 14px;
+  min-height: 44px;
+  color: var(--text);
+  text-align: left;
+  transition: border-color 0.15s ease;
+}
+
+.multi-select-toggle:hover { border-color: var(--una-green); }
+.multi-select-toggle[aria-expanded="true"] {
+  border-color: var(--una-green);
+  box-shadow: 0 0 0 3px rgba(59, 114, 103, 0.15);
+}
+
+.multi-select-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multi-select-count {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  background: var(--una-green);
+  color: var(--white);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.multi-select-chevron {
+  margin-left: 8px;
+  color: var(--una-green);
+  font-size: 12px;
+  transition: transform 0.18s ease;
+}
+
+.multi-select-toggle[aria-expanded="true"] .multi-select-chevron {
+  transform: rotate(180deg);
+}
+
+.multi-select-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--white);
+  border: 1px solid var(--grey-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.multi-select-panel[hidden] { display: none; }
+
+.multi-select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+  min-height: 40px;
+  transition: background 0.1s ease;
+}
+
+.multi-select-option:hover { background: var(--grey-50); }
+
+.multi-select-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--una-green);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.multi-select-clear {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 4px 8px;
+  padding: 8px;
+  background: var(--grey-50);
+  color: var(--una-green);
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: 36px;
+}
+
+.multi-select-clear:hover { background: var(--grey-100); }
+.multi-select-clear[hidden] { display: none; }
+
 /* ============ Week navigation ============ */
 
 .week-nav {
@@ -348,27 +464,16 @@ select {
   filter: grayscale(0.2);
 }
 
-/* Program-type color variants */
-.event-card.type-sport-drop-in {
-  background: var(--bright-yellow-lighter);
-  border-left-color: var(--una-green);
+/* Full (unavailable) events — grey state */
+.event-card.is-full {
+  background: var(--grey-100);
+  border-left-color: var(--grey-200);
 }
-.event-card.type-social-program-drop-in {
-  background: rgba(86, 222, 185, 0.30);
-  border-left-color: var(--bright-green-darker);
-}
-.event-card.type-registered-sports {
-  background: var(--beige);
-  border-left-color: var(--una-green-darker);
-}
-.event-card.type-programs-with-drop-in-options {
-  background: var(--white);
-  border: 1px solid var(--una-green);
-  border-left: 3px solid var(--una-green);
-}
-.event-card.type-family-sports-drop-in {
-  background: rgba(233, 233, 128, 0.4);
-  border-left-color: var(--una-green);
+.event-card.is-full .event-name,
+.event-card.is-full .event-age,
+.event-card.is-full .event-time {
+  color: var(--text);
+  opacity: 0.75;
 }
 
 .event-name {
@@ -644,6 +749,15 @@ select {
 
   .filters.is-open { display: flex; }
   .filter { min-width: 0; flex: 1 1 auto; width: 100%; }
+
+  /* On mobile, multi-select panel expands inline to avoid fixed-position issues */
+  .multi-select-panel {
+    position: static;
+    box-shadow: none;
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    max-height: 240px;
+  }
 
   /* Week nav: icon-only arrows */
   .week-nav { padding: 12px 16px; }
