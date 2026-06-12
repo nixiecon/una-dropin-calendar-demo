@@ -50,7 +50,7 @@
     if (raw.IsCancelled === true || raw.IsCancelled === 'true') return true;
     if (raw.Cancelled === true || raw.Cancelled === 'true') return true;
     if (/cancel/i.test(String(raw.Status || raw.EventStatus || ''))) return true;
-    if (/^\s*cancell?ed\b/i.test(String(raw.Subject || ''))) return true;
+    if (/\bcancell?ed\b/i.test(String(raw.Subject || ''))) return true;
     return false;
   }
 
