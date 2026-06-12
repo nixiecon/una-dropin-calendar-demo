@@ -255,9 +255,10 @@
       if (state.filters.ageCategory.length && !state.filters.ageCategory.includes(p.ageCategory)) return false;
       if (state.filters.location.length && !state.filters.location.includes(p.location)) return false;
 
-      // Availability: "available" hides Full and past events
+      // Availability: "available" hides Full, cancelled, and past events
       if (state.filters.availability.includes('available')) {
         if (p.spotsLeft === 0) return false;
+        if (p.cancelled) return false;
         if (p._isPast) return false;
       }
       return true;
@@ -527,7 +528,8 @@
     const card = document.createElement('div');
     card.className = 'event-card';
     if (ev._isPast) card.classList.add('is-past');
-    if (ev.spotsLeft === 0) card.classList.add('is-full');
+    if (ev.cancelled) card.classList.add('is-cancelled');
+    else if (ev.spotsLeft === 0) card.classList.add('is-full');
 
     card.style.top = top + 'px';
     card.style.height = height + 'px';
@@ -536,6 +538,7 @@
 
     card.innerHTML =
       `<span class="event-name">${escapeHtml(ev.name)}</span>` +
+      (ev.cancelled ? '<span class="event-cancelled-label">Cancelled</span>' : '') +
       `<span class="event-age">${escapeHtml(ev.ageRange)}</span>` +
       `<span class="event-time">${formatTime12(ev.startTime)} – ${formatTime12(ev.endTime)}</span>`;
 
@@ -555,11 +558,14 @@
       col.dataset.day = String(d);
       if (isSameDay(dayDate, today)) col.classList.add('is-today');
 
-      // Day label (since list view hides the time axis + header row context on mobile)
+      // Day header — same markup/style as the grid view header row
       const label = document.createElement('div');
-      label.className = 'list-day-label';
-      label.style.cssText = 'font-weight:700;color:var(--una-green);font-size:13px;text-transform:uppercase;letter-spacing:0.4px;text-align:center;padding:8px 4px;border-bottom:1px solid var(--grey-100);margin-bottom:4px;';
-      label.innerHTML = `${DAY_NAMES_SHORT[d]} ${dayDate.getDate()}`;
+      label.className = 'day-header list-day-header';
+      if (isSameDay(dayDate, today)) label.classList.add('is-today');
+      const monthAbbr = MONTH_NAMES_SHORT[dayDate.getMonth()];
+      label.innerHTML =
+        `<span class="day-header-long">${DAY_NAMES_LONG[d]}, ${monthAbbr} ${dayDate.getDate()}</span>` +
+        `<span class="day-header-short">${DAY_NAMES_SHORT[d]}, ${monthAbbr} ${dayDate.getDate()}</span>`;
       col.appendChild(label);
 
       const dayEvents = events
@@ -576,9 +582,11 @@
           const card = document.createElement('div');
           card.className = 'event-card';
           if (ev._isPast) card.classList.add('is-past');
-          if (ev.spotsLeft === 0) card.classList.add('is-full');
+          if (ev.cancelled) card.classList.add('is-cancelled');
+          else if (ev.spotsLeft === 0) card.classList.add('is-full');
           card.innerHTML =
             `<span class="event-name">${escapeHtml(ev.name)}</span>` +
+            (ev.cancelled ? '<span class="event-cancelled-label">Cancelled</span>' : '') +
             `<span class="event-age">${escapeHtml(ev.ageRange)}</span>` +
             `<span class="event-time">${formatTime12(ev.startTime)} – ${formatTime12(ev.endTime)}</span>`;
           attachEventInteractions(card, ev);
@@ -636,7 +644,9 @@
     parts.push(`<div class="tooltip-row">${escapeHtml(ev.ageRange)}</div>`);
     parts.push(`<div class="tooltip-row">${formatTime12(ev.startTime)} – ${formatTime12(ev.endTime)}</div>`);
     parts.push(`<div class="tooltip-row">${escapeHtml(ev.location)}</div>`);
-    if (!ev._isPast) {
+    if (ev.cancelled) {
+      parts.push('<div class="tooltip-row is-cancelled-label">Cancelled</div>');
+    } else if (!ev._isPast) {
       if (ev.spotsLeft === 0) {
         parts.push('<div class="tooltip-row is-full">Full</div>');
       } else if (typeof ev.spotsLeft === 'number') {

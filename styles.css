@@ -7,7 +7,7 @@
   /* UNA Greens */
   --una-green:         #3B7267;
   --una-green-lighter: #4D9AC9;
-  --una-green-darker:  #015990;
+  --una-green-darker:  #44BC9B;
 
   /* Bright Green Accent */
   --bright-green:         #44BC9B;
@@ -478,6 +478,30 @@ select {
   opacity: 0.75;
 }
 
+/* Cancelled sessions — grey, struck-through, labelled */
+.event-card.is-cancelled {
+  background: var(--grey-50);
+  border-left-color: var(--grey-200);
+}
+.event-card.is-cancelled .event-name {
+  color: var(--text);
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+.event-card.is-cancelled .event-age,
+.event-card.is-cancelled .event-time {
+  opacity: 0.6;
+}
+.event-cancelled-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
 .event-name {
   display: block;
   font-size: 13px;
@@ -585,6 +609,16 @@ select {
   letter-spacing: 0.6px;
 }
 
+.tooltip-row.is-cancelled-label {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--grey-100);
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
 /* ============ List view ============ */
 
 .calendar-grid.is-list-view {
@@ -612,6 +646,13 @@ select {
   left: auto !important;
   height: auto !important;
   top: auto !important;
+}
+
+/* List view: day headers match grid view */
+.calendar-grid.is-list-view .day-column { padding: 0 8px 12px; }
+.calendar-grid.is-list-view .list-day-header {
+  display: flex;          /* keeps it visible on mobile, where grid headers are hidden */
+  margin: 0 -8px 4px;     /* full-bleed across the column */
 }
 
 /* ============ Empty state ============ */

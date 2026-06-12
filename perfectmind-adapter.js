@@ -14,7 +14,7 @@
  *
  * Output shape (calendar.js schema):
  *   { id, name, programType, ageCategory, ageRange, dayOfWeek,
- *     startTime, endTime, location, spotsLeft }
+ *     startTime, endTime, location, spotsLeft, cancelled }
  * ====================================================================== */
 
 (function () {
@@ -40,6 +40,18 @@
       }
     }
     return 'Drop-In';  // fallback if no flag is set
+  }
+
+  // ----- Cancellation detection -----
+  // PerfectMind data doesn't carry a cancellation marker today. This checks
+  // every shape one could plausibly arrive in, so whichever marker the back
+  // end ends up passing lights it up with no further front-end change.
+  function deriveCancelled(raw) {
+    if (raw.IsCancelled === true || raw.IsCancelled === 'true') return true;
+    if (raw.Cancelled === true || raw.Cancelled === 'true') return true;
+    if (/cancel/i.test(String(raw.Status || raw.EventStatus || ''))) return true;
+    if (/^\s*cancell?ed\b/i.test(String(raw.Subject || ''))) return true;
+    return false;
   }
 
   // ----- Age range builder -----
@@ -152,6 +164,7 @@
           endTime:     endTime24,
           location:    String(raw.LocationName || ''),
           spotsLeft:   isNaN(remaining) ? 0 : Math.max(0, remaining),
+          cancelled:   deriveCancelled(raw),
         };
       })
       .filter(function (e) { return e !== null; });
